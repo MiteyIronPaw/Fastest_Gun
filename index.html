@@ -1,0 +1,152 @@
+<html>
+<head>
+	<title>Fastest Gun In The Continent</title>
+	<script type="text/javascript" src="timer.js" ></script>
+</head>
+<body style="background-color: #000000;margin: 0;">
+	<canvas id="game" style="margin-left: auto; margin-right: auto; display: block;top:0;" tabindex="-1"></canvas>
+	<a href="http://existentialcomics.com/comic/52" style="position:absolute;top:0;color: black;">This idea and art is not mine and is copied from this comic</a>
+	<script>
+		var canvas = document.getElementById("game");
+		var context = canvas.getContext("2d");
+
+		var game_over = false;
+		var started = false;
+		var count = 0;
+		var x_cord = 12;
+		var left = false;
+		var right = false;
+		var facing_left = true;
+		var shoot = false;
+
+		var unit = 0;
+
+		function resize_canvas(){
+	
+			 height = document.body.clientHeight;
+			 width = document.body.clientWidth;
+					  
+			 canvas.height = height;
+			 canvas.width = width;
+
+			 unit = height*0.1;
+			 x_cord = (width*0.8-unit*3)/unit;
+		}
+      resize_canvas();
+		
+
+		function popUp() {
+			foo = confirm("Updating the game is almost complete,\nyou must restart the game for the updates to take effect.\n\nDo you want to restart the game now?");
+			if(foo){
+				location.reload();
+			}
+		}
+
+
+		canvas.addEventListener('mousedown', function(evt) {
+		   if(time == 0){start_time();}
+			if(!started){
+				started = true;
+			}
+		}, false);
+		
+
+
+
+		canvas.addEventListener('keydown', function(evt) {
+			var key = evt.keyCode;
+			if(key == 65 || key == 37){left = true;facing_left = true;}
+			if(key == 68 || key == 39){right = true;facing_left = false;}
+			if(key == 69){
+				shoot = true;
+				GameLoop();
+				alert("RADICAL FREEDOM \nGame restarting down");
+				game_over = true;
+				location.reload();
+			}
+		}, false);
+
+
+
+		canvas.addEventListener('keyup', function(evt) {
+			var key = evt.keyCode;
+			if(key == 65 || key == 37){left = false;}
+			if(key == 68 || key == 39){right = false;}
+		}, false);
+		
+
+		var bg_img = new Image();
+		bg_img.src = "img/background.svg";
+
+		var sun_img = new Image();
+		sun_img.src = "img/sun.svg";
+
+		var sartre_img = new Image();
+		sartre_img.src = "img/Sartre_cowboy_l.svg";
+
+		var sartre_r_img = new Image();
+		sartre_r_img.src = "img/Sartre_cowboy_r.svg";
+
+		var sartre_f_img = new Image();
+		sartre_f_img.src = "img/Sartre_cowboy_lf.svg";
+
+		var sartre_rf_img = new Image();
+		sartre_rf_img.src = "img/Sartre_cowboy_rf.svg";
+
+		var heidegger_img = new Image();
+		heidegger_img.src = "img/Heidegger_cowboy.svg";
+
+		var start_img = new Image();
+		start_img.src = "img/click.svg";
+
+		var controls_img = new Image();
+		controls_img.src = "img/controls.svg";
+
+		var bang_img = new Image();
+		bang_img.src = "img/bang.svg";
+
+		function GameLoop(){
+			resize_canvas();
+			context.clearRect(0, 0, document.body.clientWidth, document.body.clientHeight);
+			if(!game_over){
+				context.drawImage(bg_img, 0, 0, width, height);
+				context.drawImage(sun_img, width*0.85, height*0.01, unit*2, unit*2);
+				context.drawImage(heidegger_img, width*0.1, unit*5, unit*2.6, unit*4);
+
+				if(!started){
+					context.drawImage(start_img, 0, 0, width, height);
+				}else{
+					context.drawImage(controls_img, 0, 0, width, height);
+				}
+			
+
+
+				if(!shoot){
+					if(left && x_cord > 0){x_cord -= 0.05;}
+					if(right && (x_cord*unit+unit*3.7) < width){x_cord += 0.05;}
+
+					if(facing_left){
+						context.drawImage(sartre_img, x_cord*unit, unit*5, unit*3.71, unit*4);
+				 	}else{
+						context.drawImage(sartre_r_img, x_cord*unit, unit*5, unit*3.71, unit*4);
+					}
+				}else{
+					if(facing_left){
+						context.drawImage(sartre_f_img, (x_cord-0.3)*unit, unit*5, unit*4.01, unit*4);
+						context.drawImage(bang_img, (x_cord+3)*unit, unit*3.5, unit*4, unit*2);
+				 	}else{
+						context.drawImage(sartre_rf_img, x_cord*unit, unit*5, unit*4.01, unit*4);
+					}
+				}
+
+				if(get_time() > 0 && count == 0){count += 1;popUp();start_time();}
+				if(get_time() > 1 && count == 1){count += 1;left = false;right = false;popUp();}
+			}
+		}
+
+
+		var lastLoop = new Date;
+		setInterval(GameLoop, 20);
+	</script>
+</body>
+</html>
